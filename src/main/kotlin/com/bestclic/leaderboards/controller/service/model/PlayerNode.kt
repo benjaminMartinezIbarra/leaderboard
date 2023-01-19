@@ -6,57 +6,36 @@ class PlayerNode(var value: Player) {
 
     var height = 0
 
-    var leftChild: PlayerNode? = null
+    var leftNode: PlayerNode? = null
 
-    var rightChild: PlayerNode? = null
+    var rightNode: PlayerNode? = null
 
-    val leftHeight: Int
-        get() = leftChild?.height() ?: -1
+    val leftNodeHeight: Int
+        get() = leftNode?.height() ?: -1
 
-    val rightHeight: Int
-        get() = rightChild?.height() ?: -1
+    val rightNodeHeight: Int
+        get() = rightNode?.height() ?: -1
 
     val min: PlayerNode
-        get() = leftChild?.min ?: this
+        get() = leftNode?.min ?: this
 
     val balanceFactor: Int
-        get() = leftHeight - rightHeight
+        get() = leftNodeHeight - rightNodeHeight
 
 
     private fun height(node: PlayerNode? = this): Int {
         return node?.let {
             1 + Integer.max(
-                height(node.leftChild),
-                height(node.rightChild)
+                height(node.leftNode),
+                height(node.rightNode)
             )
         } ?: -1
     }
 
-    override fun toString() = diagram(this)
-
-    private fun diagram(
-        node: PlayerNode?,
-        top: String = "",
-        root: String = "",
-        bottom: String = ""
-    ): String {
-        return node?.let {
-            if (node.leftChild == null && node.rightChild == null) {
-                "$root${node.value}\n"
-            } else {
-                diagram(node.rightChild, "$top ", "$top┌──", "$top│ ") +
-                        root + "${node.value}\n" + diagram(
-                    node.leftChild,
-                    "$bottom│ ", "$bottom└──", "$bottom "
-                )
-            }
-        } ?: "${root}null\n"
-    }
-
     private fun traverseInOrder(visit: Visitor<Player>) {
-        rightChild?.traverseInOrder(visit)
+        rightNode?.traverseInOrder(visit)
         visit(value)
-        leftChild?.traverseInOrder(visit)
+        leftNode?.traverseInOrder(visit)
     }
 
     fun traverseInOrderDesc(visit: Visitor<Player>) {

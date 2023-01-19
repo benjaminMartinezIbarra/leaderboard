@@ -25,14 +25,14 @@ class LeaderBoard {
        node?: return PlayerNode(value)
 
         if (value < node.value) {
-            node.leftChild = insert(node.leftChild, value)
+            node.leftNode = insert(node.leftNode, value)
         } else {
-            node.rightChild = insert(node.rightChild, value)
+            node.rightNode = insert(node.rightNode, value)
         }
         val balancedNode = balanced(node)
         balancedNode.height = max(
-            balancedNode.leftHeight,
-            balancedNode.rightHeight
+            balancedNode.leftNodeHeight,
+            balancedNode.rightNodeHeight
         ) + 1
         return balancedNode
     }
@@ -50,23 +50,23 @@ class LeaderBoard {
         node ?: return null
         when {
             value == node.value -> {
-                if (node.leftChild == null && node.rightChild == null) {
+                if (node.leftNode == null && node.rightNode == null) {
                     return null }
-                if (node.leftChild == null) {
-                    return node.rightChild }
-                if (node.rightChild == null) {
-                    return node.leftChild }
-                node.rightChild?.min?.value?.let {
+                if (node.leftNode == null) {
+                    return node.rightNode }
+                if (node.rightNode == null) {
+                    return node.leftNode }
+                node.rightNode?.min?.value?.let {
                     node.value = it }
-                node.rightChild = remove(node.rightChild, node.value)
+                node.rightNode = remove(node.rightNode, node.value)
             }
-            value.points <= node.value.points -> node.leftChild = remove(node.leftChild, value)
-            else -> node.rightChild = remove(node.rightChild, value)
+            value.points <= node.value.points -> node.leftNode = remove(node.leftNode, value)
+            else -> node.rightNode = remove(node.rightNode, value)
         }
         val balancedNode = balanced(node)
         balancedNode.height = max(
-            balancedNode.leftHeight,
-            balancedNode.rightHeight
+            balancedNode.leftNodeHeight,
+            balancedNode.rightNodeHeight
         ) + 1
         return balancedNode
     }
@@ -80,9 +80,9 @@ class LeaderBoard {
                     return current
                 }
                 current = if (value < current.value) {
-                    current.leftChild
+                    current.leftNode
                 } else {
-                    current.rightChild
+                    current.rightNode
                 }
             }
             return null
@@ -95,14 +95,14 @@ class LeaderBoard {
     private fun balanced(node: PlayerNode): PlayerNode {
         return when (node.balanceFactor) {
             2 -> {
-                if (node.leftChild?.balanceFactor == -1) {
+                if (node.leftNode?.balanceFactor == -1) {
                     leftRightRotate(node)
                 } else {
                     rightRotate(node)
                 }
             }
             -2 -> {
-                if (node.rightChild?.balanceFactor == 1) {
+                if (node.rightNode?.balanceFactor == 1) {
                     rightLeftRotate(node)
                 } else {
                     leftRotate(node)
@@ -117,33 +117,33 @@ class LeaderBoard {
      * rotation methods to keep the tree balanced after each update
      */
     private fun leftRotate(node: PlayerNode): PlayerNode {
-        val pivot = node.rightChild!!
-        node.rightChild = pivot.leftChild
-        pivot.leftChild = node
-        node.height = max(node.leftHeight, node.rightHeight) + 1
-        pivot.height = max(pivot.leftHeight, pivot.rightHeight) + 1
+        val pivot = node.rightNode!!
+        node.rightNode = pivot.leftNode
+        pivot.leftNode = node
+        node.height = max(node.leftNodeHeight, node.rightNodeHeight) + 1
+        pivot.height = max(pivot.leftNodeHeight, pivot.rightNodeHeight) + 1
 
         return pivot
     }
 
     private fun rightRotate(node: PlayerNode): PlayerNode {
-        val pivot = node.leftChild!!
-        node.leftChild = pivot.rightChild
-        pivot.rightChild = node
-        node.height = max(node.leftHeight, node.rightHeight) + 1
-        pivot.height = max(pivot.leftHeight, pivot.rightHeight) + 1
+        val pivot = node.leftNode!!
+        node.leftNode = pivot.rightNode
+        pivot.rightNode = node
+        node.height = max(node.leftNodeHeight, node.rightNodeHeight) + 1
+        pivot.height = max(pivot.leftNodeHeight, pivot.rightNodeHeight) + 1
         return pivot
     }
 
     private fun rightLeftRotate(node: PlayerNode): PlayerNode {
-        val rightChild = node.rightChild ?: return node
-        node.rightChild = rightRotate(rightChild)
+        val rightChild = node.rightNode ?: return node
+        node.rightNode = rightRotate(rightChild)
         return leftRotate(node)
     }
 
     private fun leftRightRotate(node: PlayerNode): PlayerNode {
-        val leftChild = node.leftChild ?: return node
-        node.leftChild = leftRotate(leftChild)
+        val leftChild = node.leftNode ?: return node
+        node.leftNode = leftRotate(leftChild)
         return rightRotate(node)
     }
 
