@@ -27,8 +27,9 @@ class GameService(
     fun removePlayer(name: String) {
         val playerToRemove = Player(name)
         leaderboardService.removePlayer(playerToRemove)
-        playerJPARepository.deleteById(name)
         saveLeaderBoard()
+        playerJPARepository.deleteById(name)
+
     }
 
     @Transactional

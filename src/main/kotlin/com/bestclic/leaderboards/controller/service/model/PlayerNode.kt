@@ -16,14 +16,14 @@ class PlayerNode(var value: Player) {
     val rightHeight: Int
         get() = rightChild?.height() ?: -1
 
-    val min: PlayerNode?
+    val min: PlayerNode
         get() = leftChild?.min ?: this
 
     val balanceFactor: Int
         get() = leftHeight - rightHeight
 
 
-    fun height(node: PlayerNode? = this): Int {
+    private fun height(node: PlayerNode? = this): Int {
         return node?.let {
             1 + Integer.max(
                 height(node.leftChild),
@@ -53,19 +53,11 @@ class PlayerNode(var value: Player) {
         } ?: "${root}null\n"
     }
 
-    fun traverseInOrderAsc(visit: Visitor<Player>) {
-        leftChild?.traverseInOrderAsc(visit)
-        visit(value)
-        rightChild?.traverseInOrderAsc(visit)
-    }
-
     private fun traverseInOrder(visit: Visitor<Player>) {
         rightChild?.traverseInOrder(visit)
         visit(value)
         leftChild?.traverseInOrder(visit)
     }
-
-
 
     fun traverseInOrderDesc(visit: Visitor<Player>) {
         var rank = 0
@@ -77,12 +69,6 @@ class PlayerNode(var value: Player) {
             visit.invoke(player)
         }
         this.traverseInOrder(rankAndVisit)
-    }
-
-    fun traversePreOrderWithNull(visit: Visitor<Player>) {
-        visit(value)
-        leftChild?.traversePreOrderWithNull(visit) ?: visit(null)
-        rightChild?.traversePreOrderWithNull(visit) ?: visit(null)
     }
 
 }

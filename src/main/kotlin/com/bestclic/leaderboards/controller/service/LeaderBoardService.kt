@@ -36,7 +36,8 @@ class LeaderboardService {
 
     @CacheEvict("playersByRank")
     fun addPlayer(player: Player){
-        leaderboard.insert(player)
+        leaderboard.get(player)?: leaderboard.insert(player)
+
     }
 
     fun getPlayer(searchedPlayer: Player): Player? {
